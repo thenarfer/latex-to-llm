@@ -210,7 +210,8 @@ my_thesis/
 
 \printbibliography
 
-\end{document}```
+\end{document}
+```
 
 ---
 
