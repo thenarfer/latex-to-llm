@@ -1,0 +1,4 @@
+# ignore patterns for latex-to-llm
+_old/
+drafts/
+*.sty
