@@ -1,0 +1,27 @@
+\documentclass{report}
+\usepackage{subfiles}
+\usepackage{graphicx}
+\usepackage{biblatex}
+\usepackage{tikz} % For flow.tikz
+
+\graphicspath{{figures/}{figures/diagrams/}} % Test graphicspath
+
+\addbibresource{biblio/main_refs.bib} % Bib file in subdir
+
+\begin{document}
+
+\chapter{First Chapter}
+\subfile{chapters/chap1} % Subfile without extension
+
+\chapter{Second Chapter}
+\subfile{chapters/chap2.tex} % Subfile with extension
+
+\appendix
+\chapter{Appendix A}
+\input{appendix/appA} % Input without extension
+
+% \input{_drafts/ideas.tex} % This one is ignored by .texexporterignore
+
+\printbibliography
+
+\end{document}
