@@ -4,7 +4,7 @@
 
 ---
 
-**Ever wished you could easily show ChatGPT your entire LaTeX/Overleaf project?**  
+**Ever wished you could easily show ChatGPT your entire LaTeX/Overleaf project?**
 This exporter takes your modular `.tex` repository—full of subfiles, includes, and references—and compiles it neatly into a single, structured text file. It ensures your LLM companion has exactly the context it needs, without manually copy-pasting dozens of files.
 
 ---
@@ -136,6 +136,81 @@ The script intelligently:
 - Resolves recursive `\input`, `\include`, and `\subfile` commands.
 - Respects your ignore rules.
 - Exports cleanly formatted text dumps and manifests.
+
+---
+
+
+## 🏗️ **Structuring Your LaTeX Project for `latex-to-llm`**
+
+For `latex-to-llm` to work effectively, your LaTeX project (whether local or on Overleaf) should follow a modular structure. The script intelligently follows specific commands to find all relevant files. Here’s how to set up your project:
+
+1.  **Break Down Your Document:**
+    *   Avoid having your entire thesis/paper in a single `.tex` file.
+    *   Split logical parts into separate files (e.g., `introduction.tex`, `methodology.tex`, `chapter1.tex`, `appendix_proofs.tex`).
+
+2.  **Use Folders for Organization:**
+    *   Group related files into directories (e.g., `sections/`, `chapters/`, `figures/`, `tables/`, `appendix/`). This keeps your project tidy and makes relative paths easier to manage.
+
+3.  **Include Files Using Supported Commands:**
+    *   From your main `.tex` file (e.g., `main.tex`), bring in your content files using **relative paths**. The script specifically looks for:
+        *   `\subfile{path/to/subfile.tex}`: **(Recommended)** The `subfiles` package is excellent as it allows each subfile to be compiled independently (useful for writing) and handles paths relative to the main file smoothly. `latex-to-llm` correctly follows these.
+        *   `\input{path/to/inputfile.tex}`: A standard LaTeX command to insert content. Paths are relative to the *current* file.
+        *   `\include{path/to/includefile}`: Similar to `\input` but forces a page break and is often used for chapters. Note that `\include` typically doesn't require the `.tex` extension in the argument, but the script will add it if missing when looking for the file.
+
+4.  **Use Relative Paths Correctly:**
+    *   Paths inside `\subfile`, `\input`, or `\include` **must be relative** to the location of the `.tex` file containing the command.
+    *   *Example:* If `main.tex` is in the root and includes `\subfile{sections/introduction.tex}`, the script will look for `introduction.tex` inside a folder named `sections`.
+
+5.  **Define a Clear Entry Point:**
+    *   Have one (or a few) main `.tex` files that serve as the root of your document structure. This is the file you'll select when running `latex-to-llm`.
+
+6.  **Reference Bibliography Files:**
+    *   Ensure your `.bib` files are referenced using standard commands like `\bibliography{myrefs}` (often with BibTeX) or `\addbibresource{myrefs.bib}` (with BibLaTeX). The script will find these `.bib` files based on the provided name/path.
+
+**Example Project Structure:**
+```
+my_thesis/
+├── main.tex
+├── my_thesis.bib
+├── preface/
+│   └── acknowledgements.tex
+├── sections/
+│   ├── introduction.tex
+│   ├── methodology.tex
+│   └── results.tex
+├── appendix/
+│   └── proofs.tex
+└── figures/
+    └── result_plot.png
+```
+**Example `main.tex` Content:**
+
+```latex
+\documentclass{article}
+\usepackage{subfiles} % Recommended!
+\usepackage{biblatex}
+\addbibresource{my_thesis.bib} % Or \bibliography{my_thesis}
+
+\begin{document}
+
+\subfile{preface/acknowledgements} % .tex often omitted for subfile
+
+\section{Introduction}
+\subfile{sections/introduction}
+
+\section{Methodology}
+\input{sections/methodology.tex} % .tex usually included for input
+
+\section{Results}
+\subfile{sections/results}
+
+\appendix
+\section{Proofs}
+\subfile{appendix/proofs}
+
+\printbibliography
+
+\end{document}```
 
 ---
 
