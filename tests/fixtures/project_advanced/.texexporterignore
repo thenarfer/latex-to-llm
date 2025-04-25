@@ -1,0 +1,4 @@
+   # Ignore draft folders and temp files
+_drafts/
+*.aux
+*.log
